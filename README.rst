@@ -39,3 +39,8 @@ If you don't use Poetry, install ``nsp2visasim`` with:
 .. code-block:: console
 
    $ pip install nsp2visasim
+
+You now appear to have an additional VISA device connected to your system. If an
+actual Arduino is attached, you can choose to open the simulation or the actual
+Arduino by selecting the correct port name. Your code should work exactly the
+same as before.
