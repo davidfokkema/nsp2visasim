@@ -1,3 +1,4 @@
+import gzip
 import json
 
 from rich.progress import track
@@ -7,8 +8,8 @@ from pythondaq.controllers.arduino_device import ArduinoVISADevice
 
 
 DEVICE = "usbmodem"
-FILENAME = "measurements.json"
-N = 2
+FILENAME = "measurements.json.gz"
+N = 100
 
 
 def main():
@@ -25,7 +26,7 @@ def main():
             data[value]["ch2"].append(device.get_input_value(2))
     device.set_output_value(0, 0)
 
-    with open(FILENAME, "w") as f:
+    with gzip.open(FILENAME, "wt") as f:
         json.dump(data, f)
 
 

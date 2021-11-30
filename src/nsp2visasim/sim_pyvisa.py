@@ -1,3 +1,4 @@
+import gzip
 import json
 import re
 import time
@@ -6,7 +7,7 @@ import pkg_resources
 
 import pyvisa
 
-SIM_DEVICES = {"ASRL::SIMLED::INSTR": "sim_led.json"}
+SIM_DEVICES = {"ASRL::SIMLED::INSTR": "sim_led.json.gz"}
 
 
 class ResourceManager(pyvisa.ResourceManager):
@@ -30,8 +31,8 @@ class ResourceManager(pyvisa.ResourceManager):
 
 class SimulatedDevice:
     def __init__(self, datafile):
-        with pkg_resources.resource_stream("nsp2visasim", datafile) as f:
-            self.data = json.load(f)
+        compressed_data = pkg_resources.resource_string("nsp2visasim", datafile)
+        self.data = json.loads(gzip.decompress(compressed_data))
         self.setting = 0
         self.idxs = {}
 
