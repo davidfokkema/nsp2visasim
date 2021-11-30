@@ -1,5 +1,5 @@
-nsp2_visasim
-============
+nsp2visasim
+===========
 
 This package contains a simulation of an Arduino VISA device connected to a
 small circuit to measure the voltage versus current characteristics of a LED. It
