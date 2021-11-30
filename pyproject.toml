@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "nsp2_visasim"
+name = "nsp2visasim"
 version = "0.1.0"
 description = ""
 authors = ["David Fokkema <davidfokkema@icloud.com>"]
