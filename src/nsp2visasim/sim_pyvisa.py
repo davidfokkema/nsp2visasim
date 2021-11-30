@@ -7,14 +7,15 @@ import pkg_resources
 
 import pyvisa
 
+# mimic errors attribute of pyvisa
+from pyvisa import errors
+
+
 SIM_DEVICES = {"ASRL::SIMLED::INSTR": "sim_led.json.gz"}
 
 
 class ResourceManager(pyvisa.ResourceManager):
     """Fake PyVISA ResourceManager"""
-
-    def __init__(self, backend=None):
-        super().__init__()
 
     def list_resources(self):
         # pyvisa returns a tuple
