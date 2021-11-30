@@ -44,3 +44,22 @@ You now appear to have an additional VISA device connected to your system. If an
 actual Arduino is attached, you can choose to open the simulation or the actual
 Arduino by selecting the correct port name. Your code should work exactly the
 same as before.
+
+A session might look like this:
+
+.. code-block:: console
+
+   $ diode list                               
+   The following devices are connected to your computer:
+   
+   ASRL/dev/cu.URT1::INSTR
+   ASRL/dev/cu.URT2::INSTR
+   ASRL/dev/cu.Bluetooth-Incoming-Port::INSTR
+   ASRL/dev/cu.usbmodem14501::INSTR
+   ASRL::SIMLED::INSTR
+   
+   $ diode info -d SIMLED
+   Device identification: Simulated Arduino VISA firmware (LED experiment)
+   
+   $ diode measure -d SIMLED -v 2.5 -n 10
+   Measured current through diode: 3.048 +- 0.030 mA @ 1.805 +- 0.011 V.
