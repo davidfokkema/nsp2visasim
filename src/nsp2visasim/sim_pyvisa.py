@@ -80,5 +80,5 @@ class SimulatedDevice:
         else:
             self.idxs[self.setting][ch_idx] += 1
 
-        time.sleep(0.002)
+        time.sleep(0.001)
         return value
