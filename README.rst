@@ -16,14 +16,26 @@ In your controller code, replace:
 
 .. code-block:: python
 
-    import pyvisa
+   import pyvisa
 
 with:
 
 .. code-block:: python
 
-    try:
-        from nsp2visasim import sim_pyvisa as pyvisa
-    except ModuleNotFoundError:
-        import pyvisa
-        
+   try:
+       from nsp2visasim import sim_pyvisa as pyvisa
+   except ModuleNotFoundError:
+       import pyvisa
+
+
+Then, if you use Poetry, add it to your existing project with:
+
+.. code-block:: console
+
+   $ poetry add --dev nsp2visasim
+
+If you don't use Poetry, install ``nsp2visasim`` with:
+
+.. code-block:: console
+
+   $ pip install nsp2visasim
