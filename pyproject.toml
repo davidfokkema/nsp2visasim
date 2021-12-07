@@ -6,10 +6,14 @@ authors = ["David Fokkema <davidfokkema@icloud.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+PyVISA = "^1.11.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 rich = "^10.15.1"
+pyserial = "^3.5"
+PyVISA-py = "^0.5.2"
+ipython = "^7.30.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
