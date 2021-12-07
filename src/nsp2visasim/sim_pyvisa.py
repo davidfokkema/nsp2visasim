@@ -15,15 +15,28 @@ SIM_DEVICES = {"ASRL::SIMLED::INSTR": "sim_led.json.gz"}
 
 
 class ResourceManager(pyvisa.ResourceManager):
-    """Fake PyVISA ResourceManager"""
+    """Fake PyVISA ResourceManager."""
 
     def list_resources(self):
+        """List VISA resources.
+
+        Returns:
+            tuple: A tuple of all connected VISA devices
+        """
         # pyvisa returns a tuple
         resources = list(super().list_resources())
         resources.extend(SIM_DEVICES.keys())
         return tuple(resources)
 
     def open_resource(self, resource, *args, **kwargs):
+        """Open a VISA instrument.
+
+        Args:
+            resource (str): Name of the VISA resource
+
+        Returns:
+            Resource or SimulatedDevice: a VISA Resource or a SimulatedDevice
+        """
         if resource not in SIM_DEVICES.keys():
             return super().open_resource(resource, *args, **kwargs)
         else:
@@ -31,13 +44,45 @@ class ResourceManager(pyvisa.ResourceManager):
 
 
 class SimulatedDevice:
+    """A simulated VISA Device.
+
+    The simulation is based on actual data. Output voltages are recorded and
+    input voltages are played back from the data.
+    """
+
     def __init__(self, datafile):
+        """Initialize the simulated device
+
+        Args:
+            datafile (str): Name of the file that contains the prerecorded
+                experimental data. The file must be included in this package.
+        """
         compressed_data = pkg_resources.resource_string("nsp2visasim", datafile)
         self.data = json.loads(gzip.decompress(compressed_data))
         self.setting = 0
         self.idxs = {}
+        self.open()
+
+    def open(self):
+        """Open the device."""
+        self._is_open = True
+
+    def close(self):
+        """Close the device."""
+        self._is_open = False
 
     def query(self, query):
+        """Write a command to the device and return the response.
+
+        Args:
+            query (str): the command to send to the device.
+
+        Returns:
+            str: the device's response.
+        """
+        if not self._is_open:
+            raise errors.InvalidSession()
+
         if re.match("\*IDN\?", query):
             return "Simulated Arduino VISA firmware (LED experiment)"
         elif match := re.match("OUT:CH0 (?P<value>\d+)", query):
@@ -62,9 +107,6 @@ class SimulatedDevice:
             # get input voltage
             value = int(self._get_input_value(match["channel"]))
             return f"{value / 1023 * 3.3:.4f}"
-        
-    def close(self):
-        pass
 
     def _get_input_value(self, channel):
         """Simulate get value from input channel
@@ -84,5 +126,6 @@ class SimulatedDevice:
         else:
             self.idxs[self.setting][ch_idx] += 1
 
+        # simulate a slow response
         time.sleep(0.001)
         return value
