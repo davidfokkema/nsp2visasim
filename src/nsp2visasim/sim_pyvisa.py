@@ -62,6 +62,9 @@ class SimulatedDevice:
             # get input voltage
             value = int(self._get_input_value(match["channel"]))
             return f"{value / 1023 * 3.3:.4f}"
+        
+    def close(self):
+        pass
 
     def _get_input_value(self, channel):
         """Simulate get value from input channel
