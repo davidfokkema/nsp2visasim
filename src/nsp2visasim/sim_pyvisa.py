@@ -11,7 +11,11 @@ import pyvisa
 from pyvisa import errors
 
 
-SIM_DEVICES = {"ASRL::SIMLED::INSTR": "sim_led.json.gz"}
+SIM_DEVICES = {
+    "ASRL::SIMLED::INSTR": "sim_led.json.gz",
+    "ASRL::SIMPV::INSTR": "sim_pv.json.gz",
+    "ASRL::SIMPV_BRIGHT::INSTR": "sim_pv_bright.json.gz",
+}
 
 
 class ResourceManager(pyvisa.ResourceManager):
