@@ -21,15 +21,30 @@ SIM_DEVICES = {
 class ResourceManager(pyvisa.ResourceManager):
     """Fake PyVISA ResourceManager."""
 
-    def list_resources(self):
+    def list_resources(self, query="?*::INSTR"):
         """List VISA resources.
+
+        Returns a tuple of connected devices matching query. The default query
+        matches all devices.
+
+        Args:
+            query (str, optional): A VISA Resource Regular expression. Device
+                names must match this query. Defaults to "?*::INSTR".
 
         Returns:
             tuple: A tuple of all connected VISA devices
         """
         # pyvisa returns a tuple
-        resources = list(super().list_resources())
-        resources.extend(SIM_DEVICES.keys())
+        resources = list(super().list_resources(query))
+
+        # translate Resource Regular Expression -> Python regex
+        pattern = query.replace("?", ".")
+        # find matching simulated devices
+        sim_devices = SIM_DEVICES.keys()
+        for device in sim_devices:
+            if re.match(pattern, device):
+                resources.append(device)
+
         return tuple(resources)
 
     def open_resource(self, resource, *args, **kwargs):
