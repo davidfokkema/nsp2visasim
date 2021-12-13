@@ -12,9 +12,12 @@ from pyvisa import errors
 
 
 SIM_DEVICES = {
-    "ASRL::SIMLED::INSTR": "sim_led.json.gz",
-    "ASRL::SIMPV::INSTR": "sim_pv.json.gz",
-    "ASRL::SIMPV_BRIGHT::INSTR": "sim_pv_bright.json.gz",
+    "ASRL::SIMLED::INSTR": ("LED experiment", "sim_led.json.gz"),
+    "ASRL::SIMPV::INSTR": ("photovoltaic cell", "sim_pv.json.gz"),
+    "ASRL::SIMPV_BRIGHT::INSTR": (
+        "photovoltaic cell under bright light",
+        "sim_pv_bright.json.gz",
+    ),
 }
 
 
@@ -59,7 +62,7 @@ class ResourceManager(pyvisa.ResourceManager):
         if resource not in SIM_DEVICES.keys():
             return super().open_resource(resource, *args, **kwargs)
         else:
-            return SimulatedDevice(SIM_DEVICES[resource])
+            return SimulatedDevice(*SIM_DEVICES[resource])
 
 
 class SimulatedDevice:
@@ -69,13 +72,16 @@ class SimulatedDevice:
     input voltages are played back from the data.
     """
 
-    def __init__(self, datafile):
+    def __init__(self, description, datafile):
         """Initialize the simulated device
 
         Args:
+            description (str): Short description of the simulation which will be
+                included in the info string.
             datafile (str): Name of the file that contains the prerecorded
                 experimental data. The file must be included in this package.
         """
+        self.description = description
         compressed_data = pkg_resources.resource_string("nsp2visasim", datafile)
         self.data = json.loads(gzip.decompress(compressed_data))
         self.setting = 0
@@ -103,7 +109,7 @@ class SimulatedDevice:
             raise errors.InvalidSession()
 
         if re.match("\*IDN\?", query):
-            return "Simulated Arduino VISA firmware (LED experiment)"
+            return f"Simulated Arduino VISA firmware ({self.description})"
         elif match := re.match("OUT:CH0 (?P<value>\d+)", query):
             # set output value
             self.setting = int(match["value"])
