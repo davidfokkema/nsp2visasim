@@ -28,7 +28,7 @@ except ModuleNotFoundError:
 Then, if you use Poetry, add it to your existing project with:
 
 ```console
-poetry add --dev nsp2visasim
+poetry add --group dev nsp2visasim
 ```
 
 If you don't use Poetry, install `nsp2visasim` with:
