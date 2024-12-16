@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "nsp2visasim"
-version = "1.4.1"
-description = ""
+version = "1.4.1.post1"
+description = "A simulated device for measuring LED characteristics."
 authors = ["David Fokkema <davidfokkema@icloud.com>"]
 
 [tool.poetry.dependencies]
