@@ -5,7 +5,7 @@ from nsp2visasim import sim_pyvisa as pyvisa
 
 
 def test_version():
-    assert __version__ == "1.3.1"
+    assert __version__ == "1.4.0"
 
 
 @pytest.fixture()
