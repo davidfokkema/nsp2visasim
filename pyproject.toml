@@ -9,7 +9,7 @@ python = "^3.8"
 PyVISA = "^1.11.3"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^5.2"
+pytest = "^8.3.4"
 rich = "^10.15.1"
 pyserial = "^3.5"
 PyVISA-py = "^0.5.2"

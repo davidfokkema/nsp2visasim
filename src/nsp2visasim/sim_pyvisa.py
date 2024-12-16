@@ -4,12 +4,10 @@ import re
 import time
 
 import pkg_resources
-
 import pyvisa
 
 # mimic errors attribute of pyvisa
 from pyvisa import errors
-
 
 SIM_DEVICES = {
     "ASRL::SIMLED::INSTR": ("LED experiment", "sim_led.json.gz"),
@@ -134,21 +132,36 @@ class SimulatedDevice:
             return f"{value / 1023 * 3.3:.4f}"
 
     def _get_input_value(self, channel):
-        """Simulate get value from input channel
+        """Simulate measure value from input channel.
+
+        The simulated measurement is retrieved from a prerecorded dataset from
+        an actual device. Data was recorded for each output voltage setting, on
+        all relevant channels, and performed multiple times. So this simulation
+        still works if you want to repeat single measurements; new data is
+        returned for each measurement. Data repeats after all recorded data is
+        exhausted. This means that this method will keep track of what values it
+        has already returned.
 
         Args:
             channel (str): analog channel number
         """
         ch_idx = f"ch{channel}"
+        # self.idxs keeps track of which new data to return for a specific
+        # setting and a specific channel
         idx = self.idxs.setdefault(self.setting, {}).setdefault(ch_idx, 0)
 
-        setting_key = str(self.setting)
+        # the output voltage wraps after 1023
+        setting_key = str(self.setting % 1024)
         try:
+            # retrieve new data for the setting and channel, idx keeps track of
+            # which 'new' value to retrieve
             value = self.data[setting_key][ch_idx][idx]
         except IndexError:
+            # all recorded data has been exhausted, start from the beginning
             value = self.data[setting_key][ch_idx][0]
             self.idxs[self.setting][ch_idx] = 1
         else:
+            # increment the index to keep the data fresh
             self.idxs[self.setting][ch_idx] += 1
 
         # simulate a slow response
