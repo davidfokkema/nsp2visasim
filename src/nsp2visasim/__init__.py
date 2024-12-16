@@ -1,1 +1,4 @@
-__version__ = '0.1.0'
+import importlib
+
+metadata = importlib.metadata.metadata("nsp2visasim")
+__version__ = metadata["version"]
