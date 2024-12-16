@@ -54,9 +54,9 @@ ASRL/dev/cu.Bluetooth-Incoming-Port::INSTR
 ASRL/dev/cu.usbmodem14501::INSTR
 ASRL::SIMLED::INSTR
 
-$ diode info -d SIMLED
+$ diode info SIMLED
 Device identification: Simulated Arduino VISA firmware (LED experiment)
 
-$ diode measure -d SIMLED -v 2.5 -n 10
+$ diode measure SIMLED -v 2.5 -n 10
 Measured current through diode: 3.048 +- 0.030 mA @ 1.805 +- 0.011 V.
 ```
