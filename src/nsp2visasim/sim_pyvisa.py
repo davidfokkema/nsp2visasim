@@ -1,9 +1,9 @@
 import gzip
+import importlib.resources
 import json
 import re
 import time
 
-import pkg_resources
 import pyvisa
 
 # mimic errors attribute of pyvisa
@@ -80,7 +80,9 @@ class SimulatedDevice:
                 experimental data. The file must be included in this package.
         """
         self.description = description
-        compressed_data = pkg_resources.resource_string("nsp2visasim", datafile)
+        compressed_data = (
+            importlib.resources.files("nsp2visasim") / datafile
+        ).read_bytes()
         self.data = json.loads(gzip.decompress(compressed_data))
         self.setting = 0
         self.idxs = {}
@@ -106,27 +108,27 @@ class SimulatedDevice:
         if not self._is_open:
             raise errors.InvalidSession()
 
-        if re.match("\*IDN\?", query):
+        if re.match(r"\*IDN\?", query):
             return f"Simulated Arduino VISA firmware ({self.description})"
-        elif match := re.match("OUT:CH0 (?P<value>\d+)", query):
+        elif match := re.match(r"OUT:CH0 (?P<value>\d+)", query):
             # set output value
             self.setting = int(match["value"])
             return match["value"]
-        elif match := re.match("OUT:CH0:VOLT (?P<voltage>\d*\.?\d*|\d+)", query):
+        elif match := re.match(r"OUT:CH0:VOLT (?P<voltage>\d*\.?\d*|\d+)", query):
             # set output voltage
             voltage = match["voltage"]
             self.setting = int(1023 * float(voltage) / 3.3)
             return voltage
-        elif match := re.match("OUT:CH0\?", query):
+        elif match := re.match(r"OUT:CH0\?", query):
             # get output value
             return str(self.setting)
-        elif match := re.match("OUT:CH0:VOLT\?", query):
+        elif match := re.match(r"OUT:CH0:VOLT\?", query):
             # get output voltage
             return str(self.setting / 1023 * 3.3)
-        elif match := re.match("MEAS:CH(?P<channel>\d+)\?", query):
+        elif match := re.match(r"MEAS:CH(?P<channel>\d+)\?", query):
             # get input value
             return self._get_input_value(match["channel"])
-        elif match := re.match("MEAS:CH(?P<channel>\d+):VOLT\?", query):
+        elif match := re.match(r"MEAS:CH(?P<channel>\d+):VOLT\?", query):
             # get input voltage
             value = int(self._get_input_value(match["channel"]))
             return f"{value / 1023 * 3.3:.4f}"
