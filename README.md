@@ -2,6 +2,24 @@
 
 This package contains a simulation of an Arduino VISA device connected to a small circuit to measure the voltage versus current characteristics of a LED. It is created for a [programming course](https://natuurkundepracticumamsterdam.github.io/ecpc/) in the physics and astronomy joint degree bachelor programme at the Vrije Universiteit and the University of Amsterdam. Students use the actual device and circuit while on campus. This package simulates [this firmware](https://github.com/davidfokkema/arduino-visa-firmware).
 
+### Installation
+
+Add nsp2visasim to your existing project with:
+
+### uv
+```console
+uv add nsp2visasim
+```
+
+### Poetry
+```console
+poetry add nsp2visasim
+```
+
+### Pip
+```console
+pip install nsp2visasim
+```
 
 ## Usage
 
@@ -20,24 +38,12 @@ except ModuleNotFoundError:
       import pyvisa
 ```
 
-Then, if you use Poetry, add it to your existing project with:
-
-```console
-poetry add --group dev nsp2visasim
-```
-
-If you don't use Poetry, install `nsp2visasim` with:
-
-```console
-pip install nsp2visasim
-```
-
 You now appear to have an additional VISA device connected to your system. If an
 actual Arduino is attached, you can choose to open the simulation or the actual
 Arduino by selecting the correct port name. Your code should work exactly the
 same as before.
 
-A session might look like this:
+A session might look like this if you're working through our [Experiment Control with Python Course](https://natuurkundepracticumamsterdam.github.io/ecpc/):
 
 ```console
 $ diode list                               
